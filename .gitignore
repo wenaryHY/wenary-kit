@@ -1,0 +1,8 @@
+# 敏感文件
+context/apifox-token.json
+context/vault.json
+config/opencode.jsonc
+
+# 系统
+.DS_Store
+Thumbs.db
