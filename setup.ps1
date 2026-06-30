@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$ConfigDir = "$env:USERPROFILE\.config\opencode",
     [string]$HaloProjectDir = "D:\codes\IJProject\Halo",
     [switch]$DryRun
