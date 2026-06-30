@@ -119,6 +119,15 @@ async fn list_posts(pool: &SqlitePool) -> Vec<Post> { ... }
 
 CI/覆盖率配置参考 `.opencode/context/docs/rust-best-practices-full.md` 第 8 章
 
+## 安全配置检查
+
+部署时检查以下安全问题（完整参考：context/docs/前端设计缺陷安全漏洞经验手册.md）：
+- 是否全站 HTTPS？是否配置了 HSTS（`max-age=31536000; includeSubDomains; preload`）？
+- 是否配置了 CSP 安全头？至少限制 `script-src` 和 `frame-ancestors`？
+- 是否配置了 `X-Frame-Options: DENY` 和 `X-Content-Type-Options: nosniff`？
+- 生产构建是否移除了 Source Map（`devtool: false`）？
+- Nginx/网关层是否配置了速率限制和请求大小限制？
+
 ## 根因追溯意识
 
 生成的 Dockerfile、CI 配置出现问题时，不只修复当前文件。

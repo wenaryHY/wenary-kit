@@ -108,3 +108,15 @@ async fn list_posts(pool: &SqlitePool) -> Vec<Post> { ... }
 - **TDD 纪律**：先写测试，看到失败，再实现。一次只做一个测试，不得批量写测试再批量实现
 - **异步架构强制**：异步是一种通用的非阻塞执行模型。前端场景包括：网络请求、文件读写、定时器、动画帧调度、WebSocket 消息、Worker 线程通信。禁止使用同步 XHR、阻塞式操作或长轮询替代异步方案
 - **Block 级严谨**：每个函数处理其边界情况。loading/error/empty 三态必须有覆盖。命名准确描述用途
+
+## 安全红线（前端）
+
+实现和审查时检查以下安全问题：
+- XSS：用户输入是否做转义？危险 sink（innerHTML、eval）是否存在？
+- 原型链污染：merge 函数是否过滤 `__proto__` / `constructor`？
+- Token 存储：是否使用了 HttpOnly Cookie 而非 localStorage？
+- 开放重定向：跳转参数是否校验了白名单？
+- postMessage：是否校验了 event.origin？
+- ReDoS：正则是否存在指数级回溯风险？
+
+完整参考：context/docs/前端设计缺陷安全漏洞经验手册.md

@@ -142,3 +142,15 @@ async fn list_posts<DB: sqlx::Database>(pool: &sqlx::Pool<DB>) -> Vec<Post> { ..
 // 硬编码具体类型——换数据库时需改 151 处
 async fn list_posts(pool: &SqlitePool) -> Vec<Post> { ... }
 ```
+
+## 安全红线（后端）
+
+实现和审查时检查以下安全问题：
+- CSRF：状态变更接口是否携带 Token 或设置 SameSite Cookie？
+- CORS：是否配置了精确的域名白名单而非 `*`？
+- IDOR：是否有权限校验？资源 ID 是否可被枚举？
+- SSRF：用户输入的 URL 是否校验了目标地址？
+- WebSocket：是否强制 `wss://`？连接时是否校验身份？
+- HTTPS/HSTS：是否强制跳转 + HSTS？
+
+完整参考：context/docs/前端设计缺陷安全漏洞经验手册.md

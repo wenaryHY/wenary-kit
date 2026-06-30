@@ -52,3 +52,15 @@ permission:
 - 问自己：这个问题的根因是否在于规范/指令/配置不完善？
 - 如果是，在最终报告中指出根因和建议的改进方向
 - 修复规范 > 修复产物
+
+## 安全红线（前端）
+
+实现和审查时检查以下安全问题：
+- XSS：用户输入是否做转义？危险 sink（innerHTML、eval）是否存在？
+- 原型链污染：merge 函数是否过滤 `__proto__` / `constructor`？
+- Token 存储：是否使用了 HttpOnly Cookie 而非 localStorage？
+- 开放重定向：跳转参数是否校验了白名单？
+- postMessage：是否校验了 event.origin？
+- ReDoS：正则是否存在指数级回溯风险？
+
+完整参考：../../../../.config/opencode/context/docs/前端设计缺陷安全漏洞经验手册.md

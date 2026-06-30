@@ -95,9 +95,33 @@ async fn list_posts<DB: sqlx::Database>(pool: &sqlx::Pool<DB>) -> Vec<Post> { ..
 async fn list_posts(pool: &SqlitePool) -> Vec<Post> { ... }
 ```
 
-## 安全审计补充
+## 安全审计清单
 
-审计时额外检查：
-- 是否存在暴露内部 API 端点给未认证客户端的风险
-- 同步阻塞式调用是否可能被用于 DoS 攻击
-- 边界情况处理不当是否可能导致安全漏洞（空指针、未初始化变量）
+审计时检查以下攻击面（完整参考：context/docs/前端设计缺陷安全漏洞经验手册.md）：
+
+注入类：
+- XSS：用户输入是否做转义？富文本是否过滤危险标签和属性？
+- 原型链污染：merge 函数是否过滤 `__proto__` / `constructor`？
+
+认证类：
+- CSRF：状态变更接口是否携带 Token？Cookie 是否有 SameSite？
+- 验证码：校验是否在服务端完成？是否绑定会话？
+- 密码重置：Token 是否密码学安全？是否一次性？是否绑定账户？
+
+传输类：
+- HTTPS：是否全站 HTTPS + HSTS？
+- WebSocket：是否强制 `wss://`？是否校验身份？
+
+存储类：
+- Token：是否使用 HttpOnly Cookie 而非 localStorage？
+- 敏感信息：是否在前端或日志中泄露？
+
+配置类：
+- CORS：是否精确配置域名白名单？
+- CSP：是否限制脚本来源？禁止 unsafe-eval？
+- 安全头：X-Frame-Options、X-Content-Type-Options 是否到位？
+
+依赖类：
+- 已知 CVE：npm audit 是否有高危漏洞？
+- CDN 资源：是否使用 SRI？
+- Source Map：生产环境是否移除？

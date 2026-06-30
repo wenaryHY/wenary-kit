@@ -49,6 +49,18 @@ permission:
 - 如果是，在最终报告中指出根因和建议的改进方向
 - 修复规范 > 修复产物
 
+## 安全红线（后端）
+
+实现和审查时检查以下安全问题：
+- CSRF：状态变更接口是否携带 Token 或设置 SameSite Cookie？
+- CORS：是否配置了精确的域名白名单而非 `*`？
+- IDOR：是否有权限校验？资源 ID 是否可被枚举？
+- SSRF：用户输入的 URL 是否校验了目标地址？
+- WebSocket：是否强制 `wss://`？连接时是否校验身份？
+- HTTPS/HSTS：是否强制跳转 + HSTS？
+
+完整参考：../../../../.config/opencode/context/docs/前端设计缺陷安全漏洞经验手册.md
+
 ## 运行时上下文
 - `.opencode/context/project.json` — 当前项目信息（插件名、projectId、包名等）
 - `.opencode/context/vault.json` — 固定配置（Token 路径、工作区路径等）
