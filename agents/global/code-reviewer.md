@@ -129,27 +129,6 @@ permission:
 - **严禁提交 docs/private/ 以外的非公开信息**：`docs/private/` 已 gitignore，放敏感文档
 - **修改 opencode 配置（AGENTS.md、opencode.jsonc 等）不提交到项目仓库**：这些是本地工具配置
 
-## 可变性原则
-
-Rust 没有 trait 和类型系统中的可变性约束——这是强大的类型系统，但也可能带来意外。实现可以被数据库、存储层、协议等可替换系统替换时要小心。
-
-- **尽量使用类型写代码**：trait + 泛型，防止硬编码的抽象系统
-- **响应变化的地方尽量开**：如果缺少必要的动态类型，使用 `Box<dyn Trait>` 而非必要
-- **尽量提前确认**：确认你的代码是否能被替换（如 SQLite vs PG，云存储 vs S3，HTTP vs gRPC）
-
-### 正例
-```rust
-// 类型参数化，方便未来动态切换
-async fn list_posts<DB: sqlx::Database>(pool: &sqlx::Pool<DB>) -> Vec<Post> { ... }
-```
-
-### 反例
-```rust
-// 硬编码具体类型——换数据库时需改 151 处
-async fn list_posts(pool: &SqlitePool) -> Vec<Post> { ... }
-```
-
-Rust 完整设计规范参考 `.opencode/context/docs/rust-best-practices-full.md`
 
 ## 前端审查
 

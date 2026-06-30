@@ -72,25 +72,6 @@ permission:
 - **严禁提交 docs/private/ 以外的非公开信息**：`docs/private/` 已 gitignore，放敏感文档
 - **修改 opencode 配置（AGENTS.md、opencode.jsonc 等）不提交到项目仓库**：这些是本地工具配置
 
-## 零成本抽象原则
-
-Rust 的 trait 和泛型是零成本抽象——编译后与硬编码类型无性能差异。当实现跨数据库、跨存储后端、跨协议等可替换组件时：
-
-- **必须使用抽象写法**（trait + 泛型），禁止硬编码具体类型
-- **抽象不应引入运行时开销**——优先编译期多态（泛型），避免 `Box<dyn Trait>` 除非必要
-- **新增功能前先评估**：这个组件未来是否可能被替换？（如 SQLite → PG、本地存储 → S3）→ 是则必须抽象
-
-正例：
-```rust
-// 泛型参数，编译期单态化，零开销
-async fn list_posts<DB: sqlx::Database>(pool: &sqlx::Pool<DB>) -> Vec<Post> { ... }
-```
-
-反例：
-```rust
-// 硬编码具体类型——换数据库时需改 151 处
-async fn list_posts(pool: &SqlitePool) -> Vec<Post> { ... }
-```
 
 ## 根因追溯意识
 
