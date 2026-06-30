@@ -22,14 +22,17 @@ function Test-SymlinkSupport {
     return $false
 }
 
-if (-not (Test-SymlinkSupport)) {
-    Write-Host ""
-    Write-Host "符号链接需要管理员权限或启用开发人员模式(Developer Mode)。" -ForegroundColor Yellow
-    Write-Host "请以管理员身份运行此脚本，或启用开发人员模式：" -ForegroundColor Yellow
-    Write-Host "  设置 -> 隐私和安全性 -> 开发人员模式 -> 开" -ForegroundColor DarkYellow
-    Write-Host ""
-    Write-Host "或者使用 -DryRun 查看将要链接的文件列表。" -ForegroundColor Gray
-    exit 1
+if (-not (Test-SymlinkSupport) -and -not $DryRun) {
+    Write-Host "当前环境不支持符号链接，正在申请管理员权限..." -ForegroundColor Yellow
+    $psArgs = "-NoExit -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    if ($ConfigDir -ne "$env:USERPROFILE\.config\opencode") {
+        $psArgs += " -ConfigDir `"$ConfigDir`""
+    }
+    if ($HaloProjectDir -ne "D:\codes\IJProject\Halo") {
+        $psArgs += " -HaloProjectDir `"$HaloProjectDir`""
+    }
+    Start-Process -FilePath "powershell.exe" -ArgumentList $psArgs -Verb RunAs -WindowStyle Normal
+    exit 0
 }
 
 function New-Symlink {
